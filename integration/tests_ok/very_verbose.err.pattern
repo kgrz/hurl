@@ -19,6 +19,8 @@
 > Accept: */*
 > User-Agent: hurl/~~~-snapshot
 >
+* Request body:
+*
 < HTTP/1.0 301 MOVED PERMANENTLY
 < Content-Type: text/html; charset=utf-8
 < Content-Length: 205
@@ -26,7 +28,7 @@
 < Server: Flask Server
 < Date: ~~~, ~~ ~~~ ~~~~ ~~:~~:~~ GMT
 <
-* Response:
+* Response body:
 * <html>
 * <head>
 *     <meta content="text/html;charset=utf-8">
@@ -43,13 +45,15 @@
 > Accept: */*
 > User-Agent: hurl/~~~-snapshot
 >
+* Request body:
+*
 < HTTP/1.0 200 OK
 < Content-Type: text/html; charset=utf-8
 < Content-Length: 11
 < Server: Flask Server
 < Date: ~~~, ~~ ~~~ ~~~~ ~~:~~:~~ GMT
 <
-* Response:
+* Response body:
 * Redirected.
 *
 * ------------------------------------------------------------------------------
@@ -68,13 +72,15 @@
 > Accept: */*
 > User-Agent: hurl/~~~-snapshot
 >
+* Request body:
+*
 < HTTP/1.0 200 OK
 < Content-Type: text/html; charset=ISO-8859-1
 < Content-Length: 4
 < Server: Flask Server
 < Date: ~~~, ~~ ~~~ ~~~~ ~~:~~:~~ GMT
 <
-* Response:
+* Response body:
 * café
 *
 * ------------------------------------------------------------------------------
@@ -86,15 +92,24 @@
 * POST http://localhost:8000/very-verbose/compressed/brotli
 * Accept-Encoding: brotli
 *
+* Implicit content-type=application/json
+*
 * Request can be run with the following curl command:
-* curl 'http://localhost:8000/very-verbose/compressed/brotli' -X POST -H 'Accept-Encoding: brotli' -L
+* curl 'http://localhost:8000/very-verbose/compressed/brotli' -H 'Accept-Encoding: brotli' -H 'Content-Type: application/json' --data $'{\n    "foo": "bar",\n    "baz": true\n}' -L
 *
 > POST /very-verbose/compressed/brotli HTTP/1.1
 > Host: localhost:8000
 > Accept: */*
 > Accept-Encoding: brotli
-> User-Agent: hurl/1.7.0-snapshot
+> Content-Type: application/json
+> User-Agent: hurl/~~~-snapshot
+> Content-Length: 37
 >
+* Request body:
+* {
+*     "foo": "bar",
+*     "baz": true
+* }
 < HTTP/1.0 200 OK
 < Content-Type: text/html; charset=utf-8
 < Content-Length: 17
@@ -102,7 +117,7 @@
 < Server: Flask Server
 < Date: ~~~, ~~ ~~~ ~~~~ ~~:~~:~~ GMT
 <
-* Response:
+* Response body:
 * Hello World!
 *
 * ------------------------------------------------------------------------------
@@ -121,13 +136,15 @@
 > Accept: */*
 > User-Agent: hurl/~~~-snapshot
 >
+* Request body:
+*
 < HTTP/1.0 200 OK
 < Content-Type: image/jpeg
 < Content-Length: 25992
 < Server: Flask Server
 < Date: ~~~, ~~ ~~~ ~~~~ ~~:~~:~~ GMT
 <
-* Response:
+* Response body:
 * Bytes <f198388ba26c2c53005f24643826384f15ba905b8ca070a470b61885c6639f8bbfe63fcee5fb498a630249e499e4eddcc9ca793406c14d02c97107e09c7af57a...>
 *
 * ------------------------------------------------------------------------------
@@ -136,23 +153,59 @@
 * Cookie store:
 *
 * Request:
-* GET http://localhost:8000/very-verbose/done
+* POST http://localhost:8000/very-verbose/update-cat
+* [MultipartFormData]
+* cat: file,cat.jpg; image/jpeg
+*
+* Implicit content-type=multipart/form-data
 *
 * Request can be run with the following curl command:
-* curl 'http://localhost:8000/very-verbose/done' -L
+* curl 'http://localhost:8000/very-verbose/update-cat' -F 'cat=@integration/tests_ok/cat.jpg;type=image/jpeg' -L
+*
+> POST /very-verbose/update-cat HTTP/1.1
+> Host: localhost:8000
+> Accept: */*
+> User-Agent: hurl/~~~-snapshot
+> Content-Length: 26572
+> Content-Type: multipart/form-data; boundary=------------------------f07ca262d7c9e0ec
+>
+* Request body:
+* Bytes <2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d663037636132363264376339653065630d0a436f6e74656e742d446973706f736974696f6e3a...>
+< HTTP/1.0 200 OK
+< Content-Type: text/html; charset=utf-8
+< Content-Length: 0
+< Server: Flask Server
+< Date: ~~~, ~~ ~~~ ~~~~ ~~:~~:~~ GMT
+<
+* Response body:
+*
+*
+* ------------------------------------------------------------------------------
+* Executing entry 6
+*
+* Cookie store:
+*
+* Request:
+* GET http://localhost:8000/very-verbose/done
+* x-foo: bar
+*
+* Request can be run with the following curl command:
+* curl 'http://localhost:8000/very-verbose/done' -H 'x-foo: bar' -L
 *
 > GET /very-verbose/done HTTP/1.1
 > Host: localhost:8000
-> x-foo: bar
 > Accept: */*
+> x-foo: bar
 > User-Agent: hurl/~~~-snapshot
 >
+* Request body:
+*
 < HTTP/1.0 200 OK
 < Content-Type: text/html; charset=utf-8
 < Content-Length: 4
 < Server: Flask Server
 < Date: ~~~, ~~ ~~~ ~~~~ ~~:~~:~~ GMT
 <
-* Response:
+* Response body:
 * Done
 *
