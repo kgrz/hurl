@@ -272,6 +272,12 @@ impl Tokenizable for SectionValue {
                     items.iter().flat_map(|e| e.tokenize()).collect(),
                 );
             }
+            SectionValue::Options(items) => {
+                add_tokens(
+                    &mut tokens,
+                    items.iter().flat_map(|e| e.tokenize()).collect(),
+                );
+            }
         }
         tokens
     }
@@ -850,5 +856,11 @@ impl Tokenizable for JsonObjectElement {
         tokens.append(&mut self.value.tokenize());
         tokens.push(Token::Whitespace(self.space3.clone()));
         tokens
+    }
+}
+
+impl Tokenizable for EntryOption {
+    fn tokenize(&self) -> Vec<Token> {
+        vec![]
     }
 }

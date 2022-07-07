@@ -222,7 +222,7 @@ pub enum SectionValue {
     Cookies(Vec<Cookie>),
     Captures(Vec<Capture>),
     Asserts(Vec<Assert>),
-    Options(Vec<EntryOption>)
+    Options(Vec<EntryOption>),
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -667,30 +667,21 @@ pub struct Variable {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum EntryOption {
-    Insecure {
-        name: OptionName,
-        value: OptionValue,
-    },
-    CaCertificate {
-        name: OptionName,
-        value: OptionValue,
-    }
+    Insecure(InsecureOption),
+    CaCertificate(CaCertificateOption),
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
-pub struct OptionName {
+pub struct InsecureOption {
     pub line_terminators: Vec<LineTerminator>,
     pub space0: Whitespace,
-    pub name: String,
     pub space1: Whitespace,
+    pub space2: Whitespace,
+    pub value: Template,
+    pub line_terminator0: LineTerminator,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
-pub enum OptionValue {
-    Bool {
-        value: bool
-    },
-    String {
-        value: String
-    }
+pub struct CaCertificateOption {
+    pub value: Template,
 }

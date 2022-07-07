@@ -233,7 +233,7 @@ impl Htmlable for KeyValue {
 
 impl Htmlable for EntryOption {
     fn to_html(&self) -> String {
-       "TODO".to_string()
+        "TODO".to_string()
     }
 }
 

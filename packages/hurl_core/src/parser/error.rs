@@ -60,7 +60,7 @@ pub enum ParseError {
     InvalidCookieAttribute,
     OddNumberOfHexDigits,
     UrlIllegalCharacter(char),
-    OptionName {name: String},
+    InvalidOption,
 }
 
 impl Error {

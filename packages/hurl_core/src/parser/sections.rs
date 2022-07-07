@@ -156,7 +156,6 @@ fn section_value_options(reader: &mut Reader) -> ParseResult<'static, SectionVal
     Ok(SectionValue::Options(options))
 }
 
-
 fn cookie(reader: &mut Reader) -> ParseResult<'static, Cookie> {
     // let start = reader.state.clone();
     let line_terminators = optional_line_terminators(reader)?;
@@ -343,36 +342,35 @@ fn assert(reader: &mut Reader) -> ParseResult<'static, Assert> {
 }
 
 fn option(reader: &mut Reader) -> ParseResult<'static, EntryOption> {
-    choice(
-        vec![
-            option_insecure,
-            option_cacert,
-        ],
-        reader,
-    )
+    choice(vec![option_insecure, option_cacert], reader)
 }
 
-
 fn option_insecure(reader: &mut Reader) -> ParseResult<'static, EntryOption> {
-    let start = reader.state.clone();
-    Err(Error {
-        pos: start.pos,
-        recoverable: false,
-        inner: ParseError::OptionName {
-            name: "insecure".to_string(),
-        },
-    })
+    let line_terminators = optional_line_terminators(reader)?;
+    let space0 = zero_or_more_spaces(reader)?;
+    try_literal("insecure", reader)?;
+    let space1 = zero_or_more_spaces(reader)?;
+    // Why recover? and not try_literal ?
+    recover(|reader1| literal(":", reader1), reader)?;
+    let space2 = zero_or_more_spaces(reader)?;
+    let value = unquoted_template(reader)?;
+    let line_terminator0 = line_terminator(reader)?;
+
+    let option = InsecureOption {
+        line_terminators,
+        space0,
+        space1,
+        space2,
+        value,
+        line_terminator0,
+    };
+
+    Ok(EntryOption::Insecure(option))
 }
 
 fn option_cacert(reader: &mut Reader) -> ParseResult<'static, EntryOption> {
-    let start = reader.state.clone();
-    Err(Error {
-        pos: start.pos,
-        recoverable: false,
-        inner: ParseError::OptionName {
-            name: "cacert".to_string(),
-        },
-    })
+    try_literal("cacert", reader)?;
+    unimplemented!()
 }
 
 #[cfg(test)]
@@ -517,9 +515,9 @@ mod tests {
                 quotes: false,
                 elements: vec![TemplateElement::String {
                     value: "Bar".to_string(),
-                    encoded: "Bar".to_string()
+                    encoded: "Bar".to_string(),
                 }],
-                source_info: SourceInfo::init(1, 6, 1, 9)
+                source_info: SourceInfo::init(1, 6, 1, 9),
             }
         );
     }
@@ -532,7 +530,7 @@ mod tests {
             error.pos,
             Pos {
                 line: 1,
-                column: 11
+                column: 11,
             }
         );
         assert!(!error.recoverable);
@@ -715,7 +713,7 @@ mod tests {
             error.pos,
             Pos {
                 line: 1,
-                column: 32
+                column: 32,
             }
         );
         assert_eq!(
